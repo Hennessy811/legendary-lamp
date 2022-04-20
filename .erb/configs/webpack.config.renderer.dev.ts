@@ -79,6 +79,14 @@ const configuration: webpack.Configuration = {
         ],
         include: /\.module\.s?(c|a)ss$/,
       },
+      // {
+      //   loader: 'postcss-loader',
+      //   options: {
+      //     postcssOptions: {
+      //       plugins: [require('tailwindcss'), require('autoprefixer')],
+      //     },
+      //   },
+      // },
       {
         test: /\.s?css$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],

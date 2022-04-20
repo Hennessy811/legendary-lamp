@@ -6,17 +6,12 @@ contextBridge.exposeInMainWorld('electron', {
       ipcRenderer.send('ipc-example', 'ping');
     },
     on(channel: string, func: (...args: unknown[]) => void) {
-      const validChannels = ['ipc-example'];
-      if (validChannels.includes(channel)) {
-        const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
-          func(...args);
-        // Deliberately strip event as it includes `sender`
-        ipcRenderer.on(channel, subscription);
+      const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
+        func(...args);
+      // Deliberately strip event as it includes `sender`
+      ipcRenderer.on(channel, subscription);
 
-        return () => ipcRenderer.removeListener(channel, subscription);
-      }
-
-      return undefined;
+      return () => ipcRenderer.removeListener(channel, subscription);
     },
     once(channel: string, func: (...args: unknown[]) => void) {
       const validChannels = ['ipc-example'];
@@ -24,6 +19,14 @@ contextBridge.exposeInMainWorld('electron', {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.once(channel, (_event, ...args) => func(...args));
       }
+    },
+
+    findPokerTables() {
+      ipcRenderer.send('findPokerTables');
+    },
+
+    stopFetchingTables() {
+      ipcRenderer.send('stopFetchingTables');
     },
   },
 });

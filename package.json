@@ -38,6 +38,7 @@
     "files": [
       "dist",
       "node_modules",
+      "models",
       "package.json"
     ],
     "afterSign": ".erb/scripts/notarize.js",
@@ -229,14 +230,15 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "axios": "^0.26.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.6",
     "electron-updater": "^4.6.5",
+    "fs-jetpack": "^4.3.1",
     "history": "^5.3.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "^6.3.0"
-  },
+    "react-dom": "^18.0.0"
+    },
   "devEngines": {
     "node": ">=14.x",
     "npm": ">=7.x"

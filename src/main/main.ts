@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { fetchTables, stopFetchingTables } from './utils/fetchTables';
 
 export default class AppUpdater {
   constructor() {
@@ -71,8 +72,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 128,
+    height: 128,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -87,15 +88,17 @@ const createWindow = async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-      mainWindow.show();
-    }
+    mainWindow.minimize();
+    // if (process.env.START_MINIMIZED) {
+    //   mainWindow.minimize();
+    // } else {
+    //   mainWindow.show();
+    // }
   });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+    stopFetchingTables();
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
@@ -110,17 +113,25 @@ const createWindow = async () => {
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
+
+  fetchTables(mainWindow);
 };
 
 /**
  * Add event listeners...
  */
 
+async function registerListeners() {
+  // ipcMain.on('stopTablesLookup', stopFetchingTables);
+  // ipcMain.on('findPokerTables', () => fetchTables(mainWindow));
+}
+
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
     app.quit();
+    stopFetchingTables();
   }
 });
 
@@ -134,4 +145,5 @@ app
       if (mainWindow === null) createWindow();
     });
   })
+  .then(registerListeners)
   .catch(console.log);
